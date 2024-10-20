@@ -68,7 +68,7 @@ export async function login({
 }
 
 export async function getCurrentUser() {
-  const { data } = await ApiResponse(`auth/current-user`);
+  const { data } = await ApiResponse.get(`auth/current-user`);
 
   return JSON.parse(data.data);
 }

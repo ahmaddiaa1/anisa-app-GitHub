@@ -7,7 +7,7 @@
     "server": "nodemon server/server.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "prisma generate --schema=server/prisma/schema.prisma && npm install && npm install --prefix client && npm run build --prefix client"
+    "build": "npx prisma generate --schema=server/prisma/schema.prisma && npm install && npm install --prefix client && npm run build --prefix client"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +15,7 @@
   "description": "",
   "type": "module",
   "dependencies": {
-    "@prisma/client": "^5.19.1",
+    "@prisma/client": "^5.21.1",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -33,6 +33,6 @@
     "pdf-lib": "^1.17.1"
   },
   "devDependencies": {
-    "prisma": "^5.20.0"
+    "prisma": "^5.21.1"
   }
 }
