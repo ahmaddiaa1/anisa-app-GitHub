@@ -7,7 +7,7 @@
     "server": "nodemon server/server.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "npx prisma generate --schema=server/prisma/schema.prisma && npm install && npm install --prefix client && npm run build --prefix client"
+    "build": "npx prisma generate --schema=server/prisma/schema.prisma && npm install && npm install --prefix client && npm run build --prefix client && npm start"
   },
   "keywords": [],
   "author": "",
