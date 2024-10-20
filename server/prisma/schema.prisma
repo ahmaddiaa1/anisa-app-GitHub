@@ -1,0 +1,218 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  username   String
+  email      String     @unique
+  password   String
+  role       Role
+  isCanceled Boolean    @default(false)
+  auditLogs  auditLog[]
+  createdAt  DateTime   @default(now())
+}
+
+model client {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  phone             String    @unique
+  fullName          String
+  whatsapp          String
+  childNote         String
+  orderDate         DateTime
+  fromHour          String
+  toHour            String
+  whoStaysWithAnisa String
+  multiMedia        String[]
+  childrenNum       Int?
+  pdfUrl            String?
+  blackList         Boolean   @default(false)
+  children          child[]
+  notes             notes[]
+  orders            order[]
+  address           address[]
+  outInHome         outInHome
+  isVerified        Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+}
+
+model anisa {
+  id                      String           @id @default(auto()) @map("_id") @db.ObjectId
+  fullName                String
+  phone                   String           @unique
+  whatsapp                String           @unique
+  email                   String
+  password                String           @default("123456")
+  facebookEmail           String
+  EducationQualification  String
+  maritalStatus           marital_status
+  otherMaritalStatus      String?
+  graduateOrStudent       graduate_Student
+  courses                 String
+  experience              String
+  books                   String
+  devotedHours            String
+  WhyAnisa                String
+  skills                  String
+  whatAnisaOffers         String
+  learnWithUs             Boolean
+  anisaPerceptionOfMother String
+  address                 address[]
+  multiMedia              String[]
+  pdfUrl                  String?
+  orders                  order[]
+  anisaStatus             anisa_status     @default(inActive)
+  isVerified              Boolean          @default(false)
+  blackList               Boolean          @default(false)
+  createdAt               DateTime         @default(now())
+}
+
+model address {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  address   String
+  client    client?   @relation(fields: [clientID], references: [id])
+  clientID  String?   @db.ObjectId
+  anisa     anisa?    @relation(fields: [anisaID], references: [id])
+  anisaID   String?   @db.ObjectId
+  createdAt DateTime? @default(now())
+}
+
+model addresses {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  address String
+}
+
+model child {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  age          String
+  specialChild Boolean
+  order        order[]
+  notes        notes[]
+  customer     client    @relation(fields: [clientID], references: [id])
+  clientID     String    @db.ObjectId
+  createdAt    DateTime? @default(now())
+}
+
+model order {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  orderCategory   orderCategory @relation(fields: [orderCategoryID], references: [id])
+  client          client        @relation(fields: [clientID], references: [id])
+  anisa           anisa         @relation(fields: [anisaID], references: [id])
+  child           child         @relation(fields: [childID], references: [id])
+  childID         String        @db.ObjectId
+  orderCategoryID String        @db.ObjectId
+  clientID        String        @db.ObjectId
+  anisaID         String        @db.ObjectId
+  startDate       DateTime      @default(now())
+  endDate         DateTime
+  orderHours      Int
+  orderPrice      Int
+  finalPrice      Int?
+  anisaOrderPrice Int
+  hasAnisaBeenPaid Boolean       @default(false)
+  whoStaysWithAnisa String
+  profit          Int
+  doneHours       Int           @default(0)
+  payedAmount     Int           @default(0)
+  remainingHours  Int
+  remainingAmount Int
+  notes           notes[]
+  absent          Int           @default(0)
+  orderStatus     order_status  @default(inProcess)
+  createdAt       DateTime      @default(now())
+  location        String
+  createdByID     String
+  createdByName   String
+}
+
+model orderCategory {
+  id         String        @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  unitPrice  Int
+  anisaPrice Int
+  type       orderTimeType
+  maxHours   Int
+  minHours   Int
+  isEnable   Boolean       @default(true)
+  order      order[]
+  createdAt  DateTime      @default(now())
+}
+
+model notes {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  body      String
+  order     order?   @relation(fields: [orderID], references: [id])
+  orderID   String?  @db.ObjectId
+  client    client?  @relation(fields: [clientID], references: [id])
+  clientID  String?  @db.ObjectId
+  child     child?   @relation(fields: [childID], references: [id])
+  childID   String?  @db.ObjectId
+  createdAt DateTime @default(now())
+}
+
+model auditLog {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  user       user     @relation(fields: [userID], references: [id])
+  userID     String   @db.ObjectId
+  actionText String
+  userName   String?
+  orderID    String?
+  clientName String?
+  actionType String
+  createdAt  DateTime @default(now())
+}
+
+enum Role {
+  moderator
+  admin
+  supervisor
+}
+
+enum outInHome {
+  in_home
+  out_home
+}
+
+enum marital_status {
+  single
+  marriedAndHasChildren
+  marriedAndHasNoChildren
+}
+
+enum graduate_Student {
+  graduated
+  student
+}
+
+enum orderTimeType {
+  hourly
+  unitPrice
+}
+
+enum order_status {
+  canceled
+  accepted
+  inProcess
+  done
+}
+
+enum anisa_status {
+  invacation
+  inActive
+  active
+  busy
+}
+
+enum payment_options {
+  full
+  installment
+}
